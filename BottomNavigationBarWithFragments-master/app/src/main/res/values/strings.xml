@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BottomNavigationFragmentDemo</string>
+    <string name="app_name">Lottery Box</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="desc_image">Image from list item</string>

@@ -39,18 +39,14 @@ public class HomeFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                model selectedItem = adapter.getItem(position);
-
                 Bundle bundle = new Bundle();
-                bundle.putInt("imageResId", selectedItem.getImageResId());
-                bundle.putString("text", selectedItem.getText());
+                bundle.putInt("selectedIndex", position);
 
                 DetailFragment detailFragment = new DetailFragment();
                 detailFragment.setArguments(bundle);
 
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.container, detailFragment)
-                        .addToBackStack(null)
                         .commit();
             }
         });
