@@ -1,4 +1,4 @@
-package easy.tuto.bottomnavigationfragmentdemo.profile;
+package easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,10 +14,11 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import easy.tuto.bottomnavigationfragmentdemo.R;
+import easy.tuto.bottomnavigationfragmentdemo.profile.modelProfile;
 
-public class modelAdapterProfile extends ArrayAdapter<modelProfile> {
+public class ImageListAdapter extends ArrayAdapter<modelProfile> {
 
-    public modelAdapterProfile(Context context, List<modelProfile> modelProfiles) {
+    public ImageListAdapter(Context context, List<modelProfile> modelProfiles) {
         super(context, 0, modelProfiles);
     }
 
@@ -25,13 +26,13 @@ public class modelAdapterProfile extends ArrayAdapter<modelProfile> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_items_details_profile, parent, false);
         }
 
         modelProfile currentModel = getItem(position);
 
-        ImageView imageView = convertView.findViewById(R.id.imageView);
-        TextView textView = convertView.findViewById(R.id.textView);
+        ImageView imageView = convertView.findViewById(R.id.selectedItemImageDetail);
+        TextView textView = convertView.findViewById(R.id.selectedItemTextView);
 
         if (currentModel != null) {
             int imageResId = currentModel.getImageResId();

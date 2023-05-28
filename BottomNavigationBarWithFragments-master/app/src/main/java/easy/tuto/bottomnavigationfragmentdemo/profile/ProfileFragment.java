@@ -24,43 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import easy.tuto.bottomnavigationfragmentdemo.LoginActivity;
 import easy.tuto.bottomnavigationfragmentdemo.R;
-import easy.tuto.bottomnavigationfragmentdemo.profile.modelAdapterProfile;
-import easy.tuto.bottomnavigationfragmentdemo.profile.modelProfile;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import easy.tuto.bottomnavigationfragmentdemo.profile.modelAdapterProfile;
 import easy.tuto.bottomnavigationfragmentdemo.profile.modelProfile;
 
@@ -82,7 +51,7 @@ public class ProfileFragment extends Fragment {
         adapter = new modelAdapterProfile(requireContext(), new ArrayList<>());
         selectedItemsRecyclerView.setAdapter(adapter);
 
-        itemImageMap = createItemImageMap(); // Créer la correspondance nom d'élément - ID d'image
+        itemImageMap = createItemImageMap(); // Créer la correspondance nom d'élément - ID d'image :)
 
         String userId = auth.getCurrentUser().getUid();
 
@@ -110,6 +79,27 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("ProfileFragment", "onCancelled", databaseError.toException());
+            }
+        });
+
+        selectedItemsRecyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                modelProfile selectedModel = adapter.getItem(position);
+                if (selectedModel != null) {
+                    // Passer l'élément sélectionné à une nouvelle fragment
+                    Fragment newFragment = new easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick.SelectedItemFragment();
+                    Bundle args = new Bundle();
+                    args.putInt("imageResId", selectedModel.getImageResId());
+                    args.putString("text", selectedModel.getText());
+                    newFragment.setArguments(args);
+
+                    // Remplacer le fragment actuel par la nouvelle fragment
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.container, newFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 
