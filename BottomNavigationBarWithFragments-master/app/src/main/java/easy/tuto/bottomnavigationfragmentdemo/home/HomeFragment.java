@@ -1,4 +1,4 @@
-package easy.tuto.bottomnavigationfragmentdemo;
+package easy.tuto.bottomnavigationfragmentdemo.home;
 
 import android.os.Bundle;
 
@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import easy.tuto.bottomnavigationfragmentdemo.R;
 
 public class HomeFragment extends Fragment {
     private ListView listView;
@@ -41,6 +43,8 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("selectedIndex", position);
+                // Ajouter le nom de l'item sélectionné au Bundle
+                bundle.putString("selectedItemName", itemList.get(position).getText()); // Remplacer getName() par la méthode que vous utilisez pour obtenir le nom de l'item
 
                 DetailFragment detailFragment = new DetailFragment();
                 detailFragment.setArguments(bundle);

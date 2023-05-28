@@ -1,4 +1,4 @@
-package easy.tuto.bottomnavigationfragmentdemo;
+package easy.tuto.bottomnavigationfragmentdemo.home;
 
 public class model{
         private int imageResId;

@@ -1,4 +1,4 @@
-package easy.tuto.bottomnavigationfragmentdemo;
+package easy.tuto.bottomnavigationfragmentdemo.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import java.util.List;
+
+import easy.tuto.bottomnavigationfragmentdemo.R;
 
 public class modelAdapter extends ArrayAdapter<model> {
 

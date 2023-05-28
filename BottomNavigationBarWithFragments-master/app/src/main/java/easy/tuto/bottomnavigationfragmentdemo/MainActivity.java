@@ -11,6 +11,9 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import easy.tuto.bottomnavigationfragmentdemo.home.HomeFragment;
+import easy.tuto.bottomnavigationfragmentdemo.profile.ProfileFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
