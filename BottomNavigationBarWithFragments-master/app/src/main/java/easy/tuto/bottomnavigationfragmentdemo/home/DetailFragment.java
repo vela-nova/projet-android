@@ -106,12 +106,12 @@ public class DetailFragment extends Fragment {
                 // Récupérer l'identifiant de l'utilisateur
                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-
-
                 // Ajouter le nom de l'item sélectionné en première position de la liste
                 List<String> selectedItemText = new ArrayList<>(Arrays.asList(texts[selectedIndex]));
-
                 selectedItemText.add(0, selectedItemName);
+
+                // Ajouter l'élément lottery
+                selectedItemText.add(6,"off");
 
                 // Enregistrer l'élément sélectionné dans Firebase sous l'identifiant de l'utilisateur
                 database.child("users").child(userId).child("selectedItems").push().setValue(selectedItemText);

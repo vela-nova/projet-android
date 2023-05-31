@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,21 +26,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import easy.tuto.bottomnavigationfragmentdemo.LoginActivity;
 import easy.tuto.bottomnavigationfragmentdemo.R;
-import easy.tuto.bottomnavigationfragmentdemo.profile.modelAdapterProfile;
-import easy.tuto.bottomnavigationfragmentdemo.profile.modelProfile;
 
 public class ProfileFragment extends Fragment {
     Activity context;
     private ListView selectedItemsRecyclerView;
     private modelAdapterProfile adapter;
+    private List<String> allItems;
     private HashMap<String, Integer> itemImageMap; // HashMap pour la correspondance nom d'élément - ID d'image
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        allItems = new ArrayList<>();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         context = getActivity();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
 
         itemImageMap = createItemImageMap(); // Créer la correspondance nom d'élément - ID d'image :)
 
-        String userId = auth.getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         database.child("users").child(userId).child("selectedItems").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -64,6 +64,11 @@ public class ProfileFragment extends Fragment {
                     List<String> selectedItem = snapshot.getValue(typeIndicator);
 
                     if (selectedItem != null && selectedItem.size() > 0) {
+                        // Ajouter tous les éléments récupérés à la liste allItems
+
+                        String selectedItemID = snapshot.getKey();
+                        allItems.add(selectedItemID);
+                        allItems.addAll(selectedItem);
                         String selectedItemName = selectedItem.get(0);
                         String selectedItemText = selectedItem.get(0);
 
@@ -74,6 +79,7 @@ public class ProfileFragment extends Fragment {
                         adapter.add(selectedModel);
                     }
                 }
+
             }
 
             @Override
@@ -82,35 +88,32 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        selectedItemsRecyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                modelProfile selectedModel = adapter.getItem(position);
-                if (selectedModel != null) {
-                    // Passer l'élément sélectionné à une nouvelle fragment
-                    Fragment newFragment = new easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick.SelectedItemFragment();
-                    Bundle args = new Bundle();
-                    args.putInt("imageResId", selectedModel.getImageResId());
-                    args.putString("text", selectedModel.getText());
-                    newFragment.setArguments(args);
+        selectedItemsRecyclerView.setOnItemClickListener((parent, view1, position, id) -> {
+            modelProfile selectedModel = adapter.getItem(position);
+            if (selectedModel != null) {
+                // Passer l'élément sélectionné à une nouvelle fragment
+                Fragment newFragment = new easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick.SelectedItemFragment();
+                Bundle args = new Bundle();
+                args.putInt("imageResId", selectedModel.getImageResId());
+                args.putString("boite", selectedModel.getText());
+                args.putStringArrayList("allItems", (ArrayList<String>) allItems);
+                args.putString("idBoite",allItems.get(position*8));
+                System.out.println(allItems.get(position*8));
+                newFragment.setArguments(args);
 
-                    // Remplacer le fragment actuel par la nouvelle fragment
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.container, newFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+                // Remplacer le fragment actuel par la nouvelle fragment
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.container, newFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
         Button btn = view.findViewById(R.id.btnLogout);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(context, LoginActivity.class);
-                startActivity(intent);
-            }
+        btn.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(context, LoginActivity.class);
+            startActivity(intent);
         });
 
         return view;
