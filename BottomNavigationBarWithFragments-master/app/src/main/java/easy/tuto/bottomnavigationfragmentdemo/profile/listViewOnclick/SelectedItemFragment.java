@@ -9,21 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import easy.tuto.bottomnavigationfragmentdemo.R;
 
@@ -108,7 +103,7 @@ public class SelectedItemFragment extends Fragment {
 
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        // Fonction lotterie
+        // Fonction lottery
         lotteryButton = view.findViewById(R.id.lotteryButton);
         winningItemTextView = view.findViewById(R.id.textlottery);
         if(this.ItemsBoite.get(7).contentEquals("off")){
@@ -118,21 +113,8 @@ public class SelectedItemFragment extends Fragment {
             winningItemTextView.setText(ItemsBoite.get(7));
             lotteryButton.setVisibility(View.GONE);
         }
-/*
-        data.child("users").child(String.valueOf(usersRef)).child("selectedItems").child(this.idBoite).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                if (value != null && value.equals("off")) {
-                    System.out.println("valeur :"+value);
-                    Log.d("SelectedItems", "La valeur est off");
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("SelectedItems", "Erreur lors de la récupération de la valeur", databaseError.toException());
-            }
-        });*/
+
+        //Onclick Lottery
         lotteryButton.setOnClickListener(v -> {
             if(this.ItemsBoite.get(7).equals("off")) {
                 Lottery lottery = new Lottery(this.nomIntBoite);
