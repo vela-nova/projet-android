@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import easy.tuto.bottomnavigationfragmentdemo.home.HomeActivity;
+
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
@@ -80,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
     }

@@ -12,10 +12,10 @@ import java.util.List;
 
 import easy.tuto.bottomnavigationfragmentdemo.R;
 
-public class modelAdapter extends ArrayAdapter<model> {
+public class BoxeAdapter extends ArrayAdapter<Box> {
 
-    public modelAdapter(Context context, List<model> models) {
-        super(context, 0, models);
+    public BoxeAdapter(Context context, List<Box> Boxes) {
+        super(context, 0, Boxes);
     }
 
     @Override
@@ -24,13 +24,13 @@ public class modelAdapter extends ArrayAdapter<model> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
 
-        model currentModel = getItem(position);
+        Box currentBox = getItem(position);
 
         ImageView imageView = convertView.findViewById(R.id.imageView);
         TextView textView = convertView.findViewById(R.id.textView);
 
-        imageView.setImageResource(currentModel.getImageResId());
-        textView.setText(currentModel.getText());
+        imageView.setImageResource(currentBox.getImageResId());
+        textView.setText(currentBox.getText());
 
         return convertView;
     }

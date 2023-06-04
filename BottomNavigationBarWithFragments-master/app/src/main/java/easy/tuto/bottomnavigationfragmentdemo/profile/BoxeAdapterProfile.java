@@ -15,10 +15,10 @@ import java.util.List;
 
 import easy.tuto.bottomnavigationfragmentdemo.R;
 
-public class modelAdapterProfile extends ArrayAdapter<modelProfile> {
+public class BoxeAdapterProfile extends ArrayAdapter<Box> {
 
-    public modelAdapterProfile(Context context, List<modelProfile> modelProfiles) {
-        super(context, 0, modelProfiles);
+    public BoxeAdapterProfile(Context context, List<Box> Box) {
+        super(context, 0, Box);
     }
 
     @NonNull
@@ -28,16 +28,18 @@ public class modelAdapterProfile extends ArrayAdapter<modelProfile> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
 
-        modelProfile currentModel = getItem(position);
+        Box currentModel = getItem(position);
 
         ImageView imageView = convertView.findViewById(R.id.imageView);
         TextView textView = convertView.findViewById(R.id.textView);
 
         if (currentModel != null) {
-            int imageResId = currentModel.getImageResId();
-            if (imageResId != 0) {
-                imageView.setImageResource(imageResId);
-            }
+            String imageFileName = currentModel.getImageResId();
+            int drawableResourceId = getContext().getResources().getIdentifier(
+                    imageFileName, "drawable", getContext().getPackageName()
+            );
+            imageView.setImageResource(drawableResourceId);
+
             textView.setText(currentModel.getText());
         }
 

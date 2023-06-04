@@ -1,20 +1,19 @@
 package easy.tuto.bottomnavigationfragmentdemo.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,28 +29,30 @@ import java.util.Objects;
 
 import easy.tuto.bottomnavigationfragmentdemo.LoginActivity;
 import easy.tuto.bottomnavigationfragmentdemo.R;
+import easy.tuto.bottomnavigationfragmentdemo.home.HomeActivity;
 
-public class ProfileFragment extends Fragment {
-    Activity context;
+public class ProfileActivity extends AppCompatActivity {
     private ListView selectedItemsRecyclerView;
-    private modelAdapterProfile adapter;
+    BottomNavigationView bottomNavigationView;
+    private BoxeAdapterProfile adapter;
     private List<String> allItems;
     private HashMap<String, Integer> itemImageMap; // HashMap pour la correspondance nom d'élément - ID d'image
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile); // Changer avec le nom de votre layout
+        bottomNavigationView  = findViewById(R.id.bottom_navigation);
+
         allItems = new ArrayList<>();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        context = getActivity();
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        selectedItemsRecyclerView = view.findViewById(R.id.listviewprofile);
+        selectedItemsRecyclerView = findViewById(R.id.listviewprofile);
 
-        adapter = new modelAdapterProfile(requireContext(), new ArrayList<>());
+        adapter = new BoxeAdapterProfile(this, new ArrayList<>());
         selectedItemsRecyclerView.setAdapter(adapter);
 
-        itemImageMap = createItemImageMap(); // Créer la correspondance nom d'élément - ID d'image :)
+        itemImageMap = createItemImageMap(); // Créer la correspondance nom d'élément ID d'image
 
         String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
@@ -71,11 +72,12 @@ public class ProfileFragment extends Fragment {
                         allItems.addAll(selectedItem);
                         String selectedItemName = selectedItem.get(0);
                         String selectedItemText = selectedItem.get(0);
+                        System.out.println("selectedItemName"+selectedItemName);
 
                         // Obtenir l'ID d'image correspondant au nom d'élément à partir de la HashMap
-                        int selectedItemImageResId = itemImageMap.get(selectedItemName);
+                        String selectedItemImageResId = selectedItemName;
 
-                        modelProfile selectedModel = new modelProfile(selectedItemImageResId, selectedItemText);
+                        Box selectedModel = new Box(selectedItemImageResId, selectedItemText);
                         adapter.add(selectedModel);
                     }
                 }
@@ -84,39 +86,51 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "onCancelled", databaseError.toException());
+                Log.e("ProfileActivity", "onCancelled", databaseError.toException());
             }
         });
 
-        selectedItemsRecyclerView.setOnItemClickListener((parent, view1, position, id) -> {
-            modelProfile selectedModel = adapter.getItem(position);
-            if (selectedModel != null) {
-                // Passer l'élément sélectionné à une nouvelle fragment
-                Fragment newFragment = new easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick.SelectedItemFragment();
-                Bundle args = new Bundle();
-                args.putInt("imageResId", selectedModel.getImageResId());
-                args.putString("boite", selectedModel.getText());
-                args.putStringArrayList("allItems", (ArrayList<String>) allItems);
-                args.putString("idBoite",allItems.get(position*8));
-                System.out.println(allItems.get(position*8));
-                newFragment.setArguments(args);
-
-                // Remplacer le fragment actuel par la nouvelle fragment
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.container, newFragment)
-                        .addToBackStack(null)
-                        .commit();
+        selectedItemsRecyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Box selectedModel = adapter.getItem(position);
+                if (selectedModel != null) {
+                    // Passer l'élément sélectionné à une nouvelle Activity
+                    /*Intent intent = new Intent(ProfileActivity.this, SelectedItemActivity.class);
+                    intent.putExtra("imageResId", selectedModel.getImageResId());
+                    intent.putExtra("boite", selectedModel.getText());
+                    intent.putStringArrayListExtra("allItems", (ArrayList<String>) allItems);
+                    intent.putExtra("idBoite",allItems.get(position*8));
+                    startActivity(intent);*/
+                }
             }
         });
 
-        Button btn = view.findViewById(R.id.btnLogout);
+        Button btn = findViewById(R.id.btnLogout);
         btn.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(context, LoginActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 
-        return view;
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                Intent intent;
+                switch (item.getItemId()){
+                    case R.id.home:
+                        intent = new Intent(ProfileActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.settings:
+                        bottomNavigationView.getMenu().findItem(R.id.settings).setChecked(false);
+                        return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     // Méthode pour créer la correspondance nom d'élément - ID d'image
