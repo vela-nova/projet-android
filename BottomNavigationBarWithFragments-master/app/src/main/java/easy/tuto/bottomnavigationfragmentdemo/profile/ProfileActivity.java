@@ -30,6 +30,7 @@ import java.util.Objects;
 import easy.tuto.bottomnavigationfragmentdemo.LoginActivity;
 import easy.tuto.bottomnavigationfragmentdemo.R;
 import easy.tuto.bottomnavigationfragmentdemo.home.HomeActivity;
+import easy.tuto.bottomnavigationfragmentdemo.profile.listViewOnclick.SelectedItemActivity;
 
 public class ProfileActivity extends AppCompatActivity {
     private ListView selectedItemsRecyclerView;
@@ -96,12 +97,12 @@ public class ProfileActivity extends AppCompatActivity {
                 Box selectedModel = adapter.getItem(position);
                 if (selectedModel != null) {
                     // Passer l'élément sélectionné à une nouvelle Activity
-                    /*Intent intent = new Intent(ProfileActivity.this, SelectedItemActivity.class);
+                    Intent intent = new Intent(ProfileActivity.this, SelectedItemActivity.class);
                     intent.putExtra("imageResId", selectedModel.getImageResId());
                     intent.putExtra("boite", selectedModel.getText());
                     intent.putStringArrayListExtra("allItems", (ArrayList<String>) allItems);
                     intent.putExtra("idBoite",allItems.get(position*8));
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
             }
         });
@@ -124,10 +125,9 @@ public class ProfileActivity extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.settings:
-                        bottomNavigationView.getMenu().findItem(R.id.settings).setChecked(false);
+                        //bottomNavigationView.getMenu().findItem(R.id.settings).setChecked(false);
                         return true;
                 }
-
                 return false;
             }
         });

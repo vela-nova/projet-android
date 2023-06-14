@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent;
                 switch (item.getItemId()){
                     case R.id.home:
-                        bottomNavigationView.getMenu().findItem(R.id.home).setChecked(false);
+                        //bottomNavigationView.getMenu().findItem(R.id.home).setChecked(false);
                         return true;
                     case R.id.settings:
                         intent = new Intent(HomeActivity.this, ProfileActivity.class);
@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
                 }
-
                 return false;
             }
         });
