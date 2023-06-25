@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Lottery Box</string>
+    <string name="back_button_text">Retour</string>
+    <string name="placeholder">PLACEHOLDER</string>
+    <string name="acheter_la_boite">Acheter</string>
+    <string name="acheter_boites">Acheter des boîtes surprise</string>
+    <string name="acheter_et_ouvrir">Acheter et Ouvrir</string>
+    <string name="logout">Déconnexion</string>
+    <string name="items">Articles</string>
+    <string name="boites">Boîtes</string>
+    <string name="inventaire">Inventaire</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="ouvrir">Ouvrir</string>
+    <string name="connexion">Connexion</string>
+    <string name="email">Email</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="s_inscrire">S\'inscrire</string>
+    <string name="bienvenue">Bienvenue</string>
+    <string name="formulaire_d_inscription">Formulaire d\'inscription</string>
+    <string name="pr_nom">Prénom</string>
+    <string name="nom_de_famille">Nom de famille</string>
+    <string name="inscription">Inscription</string>
+    <string name="login">Login</string>
+</resources>
