@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity implements BoxesClientCallba
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(HomeActivity.this, HomeActivityDetail.class);
-                intent.putExtra("selectedBoxId", boxAdapter.getItem(position).getBoxId());
+                intent.putExtra("selectedBox", boxAdapter.getItem(position));
                 startActivity(intent);
             }
         });

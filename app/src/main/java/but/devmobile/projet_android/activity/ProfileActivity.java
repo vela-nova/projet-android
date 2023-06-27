@@ -153,9 +153,8 @@ public class ProfileActivity extends AppCompatActivity {
                 if (selectedBox != null) {
                     // Passer l'élément sélectionné à une nouvelle Activity
                     Intent intent = new Intent(ProfileActivity.this, HomeActivityDetail.class);
-                    intent.putExtra("selectedBoxId", selectedBox.getBoxId());
+                    intent.putExtra("selectedBox", selectedBox);
                     intent.putExtra("isBoxOwned", true);
-                    intent.putExtra("selectedBoxInstanceReference", selectedBox.getBoxInstanceReference());
                     startActivity(intent);
                 }
             }
