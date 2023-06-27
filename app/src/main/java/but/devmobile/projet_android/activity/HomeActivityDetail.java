@@ -3,6 +3,8 @@ package but.devmobile.projet_android.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,18 +28,12 @@ import but.devmobile.projet_android.dto.ItemAdapter;
 import but.devmobile.projet_android.utils.BoxesClientCallback;
 import but.devmobile.projet_android.utils.HttpClient;
 
-public class HomeActivityDetail extends AppCompatActivity  implements BoxesClientCallback {
-    private Integer selectedBoxId;
+public class HomeActivityDetail extends AppCompatActivity {
+
     private Box selectedBox;
     private ItemAdapter itemAdapter;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Boolean isBoxOwned;
-    private String selectedBoxInstanceReference;
-
-    private void getBoxes(){
-        HttpClient httpClient = new HttpClient();
-        httpClient.getBoxData(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,25 +55,34 @@ public class HomeActivityDetail extends AppCompatActivity  implements BoxesClien
         Button openButton = findViewById(R.id.openButton);
 
         // cette ligne sert a recuperer la boite souhaitée selon l'id envoyée par l'intent
-        selectedBoxId = getIntent().getIntExtra("selectedBoxId", 0);
+        selectedBox = getIntent().getParcelableExtra("selectedBox");
         isBoxOwned = getIntent().getBooleanExtra("isBoxOwned", false);
 
         if (isBoxOwned){
             saveToFirebaseButtonTop.setVisibility(View.INVISIBLE);
             buyAndOpenButton.setVisibility(View.INVISIBLE);
             openButton.setVisibility(View.VISIBLE);
-            selectedBoxInstanceReference = getIntent().getStringExtra("selectedBoxInstanceReference");
         }
 
+        TextView boxDetailName = findViewById(R.id.box_detail_name);
+        ImageView boxDetailPicture = findViewById(R.id.box_detail_picture);
 
-        getBoxes();
+        // Définir le texte de la vue TextView
+        boxDetailName.setText(selectedBox.getBoxName());
+        Picasso.get().load(selectedBox.getBoxPicture()).into(boxDetailPicture);
+
+
+        ListView listView = findViewById(R.id.listViewItems);
+        itemAdapter = new ItemAdapter(HomeActivityDetail.this, selectedBox.getItems(), R.layout.item_element);
+        listView.setAdapter(itemAdapter);
+
 
 
         openButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Item itemObtained = selectedBox.openBox();
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReferenceFromUrl(selectedBoxInstanceReference);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReferenceFromUrl(selectedBox.getBoxInstanceReference());
                 reference.removeValue();
 
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -122,6 +127,11 @@ public class HomeActivityDetail extends AppCompatActivity  implements BoxesClien
         saveToFirebaseButtonTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Animation animation = AnimationUtils.loadAnimation(v.getContext(), R.anim.animation_buy);
+
+                // Appliquer l'animation au bouton
+                saveToFirebaseButtonTop.startAnimation(animation);
+
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
                 // Récupérer l'identifiant de l'utilisateur
@@ -135,37 +145,5 @@ public class HomeActivityDetail extends AppCompatActivity  implements BoxesClien
 
             }
         });
-    }
-
-    @Override
-    public void onSuccess(ArrayList<Box> result) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    selectedBox = result.get(selectedBoxId);
-
-                    TextView boxDetailName = findViewById(R.id.box_detail_name);
-                    ImageView boxDetailPicture = findViewById(R.id.box_detail_picture);
-
-                    // Définir le texte de la vue TextView
-                    boxDetailName.setText(selectedBox.getBoxName());
-                    Picasso.get().load(selectedBox.getBoxPicture()).into(boxDetailPicture);
-
-
-                    ListView listView = findViewById(R.id.listViewItems);
-                    itemAdapter = new ItemAdapter(HomeActivityDetail.this, selectedBox.getItems(), R.layout.item_element);
-                    listView.setAdapter(itemAdapter);
-                }
-                finally {
-                    System.out.println("HomeActivity : Fin du thread qui crée la liste des boites");
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onFailure(Exception e) {
-
     }
 }
