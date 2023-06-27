@@ -2,6 +2,7 @@ package but.devmobile.projet_android.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,10 +28,12 @@ import but.devmobile.projet_android.dto.Item;
 import but.devmobile.projet_android.dto.ItemAdapter;
 import but.devmobile.projet_android.utils.BoxesClientCallback;
 import but.devmobile.projet_android.utils.HttpClient;
+import com.airbnb.lottie.LottieAnimationView;
 
 public class HomeActivityDetail extends AppCompatActivity {
 
     private Box selectedBox;
+    private LottieAnimationView openBoxLottie;
     private ItemAdapter itemAdapter;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Boolean isBoxOwned;
@@ -81,26 +84,45 @@ public class HomeActivityDetail extends AppCompatActivity {
         openButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Item itemObtained = selectedBox.openBox();
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReferenceFromUrl(selectedBox.getBoxInstanceReference());
-                reference.removeValue();
+                openBoxLottie = findViewById(R.id.openBoxLottie);
+                openBoxLottie.setAnimationFromUrl("https://assets1.lottiefiles.com/packages/lf20_bvlTwyzPe8.json");
 
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                // Récupérer l'identifiant de l'utilisateur
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                openBoxLottie.playAnimation();
 
-                // Enregistrer l'élément sélectionné dans Firebase sous l'identifiant de l'utilisateur
-                database.child("users").child(userId).child("ownedItems").push().setValue(itemObtained);
-                Toast.makeText(HomeActivityDetail.this, itemObtained.getItemName() + " obtenu !", Toast.LENGTH_SHORT).show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        Item itemObtained = selectedBox.openBox();
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReferenceFromUrl(selectedBox.getBoxInstanceReference());
+                        reference.removeValue();
 
-                Intent intent = new Intent(HomeActivityDetail.this, ProfileActivity.class);
-                startActivity(intent);
+                        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                        // Récupérer l'identifiant de l'utilisateur
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        // Enregistrer l'élément sélectionné dans Firebase sous l'identifiant de l'utilisateur
+                        database.child("users").child(userId).child("ownedItems").push().setValue(itemObtained);
+                        Toast.makeText(HomeActivityDetail.this, itemObtained.getItemName() + " obtenu !", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(HomeActivityDetail.this, ProfileActivity.class);
+                        startActivity(intent);
+                    }
+                }, 2500);
+
             }
         });
 
         buyAndOpenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                openBoxLottie = findViewById(R.id.openBoxLottie);
+                openBoxLottie.setAnimationFromUrl("https://assets1.lottiefiles.com/packages/lf20_bvlTwyzPe8.json");
+
+                openBoxLottie.playAnimation();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+
                 Item itemObtained = selectedBox.openBox();
 
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -109,8 +131,10 @@ public class HomeActivityDetail extends AppCompatActivity {
 
                 // Enregistrer l'élément sélectionné dans Firebase sous l'identifiant de l'utilisateur
                 database.child("users").child(userId).child("ownedItems").push().setValue(itemObtained);
-                Toast.makeText(HomeActivityDetail.this, itemObtained.getItemName() + " obtenu !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivityDetail.this, itemObtained.getItemName() + " obtenu !", Toast.LENGTH_LONG).show();
                 onBackPressed();
+                }
+            }, 2500);
             }
         });
 

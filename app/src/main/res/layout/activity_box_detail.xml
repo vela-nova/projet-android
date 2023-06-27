@@ -7,6 +7,15 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/openBoxLottie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/box_detail_picture"
+            app:lottie_autoPlay="true"
+            android:elevation="10dp"
+            />
+
         <ImageView
             android:id="@+id/box_detail_picture"
             android:layout_width="150dp"
@@ -79,6 +88,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:nestedScrollingEnabled="true"/>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
